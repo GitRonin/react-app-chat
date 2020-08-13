@@ -1,11 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, Suspense, lazy} from 'react';
 
+import Preloader from '../preloader/';
 import Header from '../header';
-import MessageInput from '../message-input';
-import MessageList from '../message-list';
+// import MessageInput from '../message-input';
+// import MessageList from '../message-list';
 
 import './app.css';
 import styled from 'styled-components';
+
+const MainArea = lazy(() => import('../preloader'));
 
 const AppBlock = styled.div`
     margin: 0 auto;
@@ -22,10 +25,22 @@ export default class App extends Component {
   render() {
 
     return (
-      <AppBlock>
-        <Header>
-        </Header>
-      </AppBlock>
+      <div>
+        <div>
+          <div id="p_prldr">
+            <div class="contpre">
+              <span class="svg_anm"></span>
+            </div>
+          </div>
+        </div>
+        {/* <Suspense fallback={<Preloader/>}>
+          <MainArea />
+        </Suspense> */}
+        <AppBlock>
+          <Header>
+          </Header>
+        </AppBlock>
+      </div>
     )
   }
 }
