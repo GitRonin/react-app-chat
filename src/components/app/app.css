@@ -1,6 +1,14 @@
-.app {
-  margin: 0 auto;
-  max-width: 800px;
+.logoText{
+  margin: 20px 0px 0px 0px;
+}
+
+.logo{
+  display: flex;
+}
+
+.logoPhoto{
+  width: 100px;
+  height: 100px;
 }
 
 #p_prldr{

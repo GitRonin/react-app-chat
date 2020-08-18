@@ -1,14 +1,10 @@
-import React, {Component, Suspense, lazy} from 'react';
-
-import Preloader from '../preloader/';
+import React, {Component} from 'react'; //Suspense, lazy
 import Header from '../header';
-// import MessageInput from '../message-input';
-// import MessageList from '../message-list';
-
+import MessageInput from '../message-input';
+import MessageList from '../message-list';
+import logo from './logo.svg';
 import './app.css';
 import styled from 'styled-components';
-
-const MainArea = lazy(() => import('../preloader'));
 
 const AppBlock = styled.div`
     margin: 0 auto;
@@ -22,8 +18,8 @@ export default class App extends Component {
       label: '123'
     }
   }
-  render() {
 
+  render() {
     return (
       <div>
         <div>
@@ -33,12 +29,14 @@ export default class App extends Component {
             </div>
           </div>
         </div>
-        {/* <Suspense fallback={<Preloader/>}>
-          <MainArea />
-        </Suspense> */}
+        <div className="logo">
+          <img className="logoPhoto" src={logo} alt="logo"/>
+          <h1 className="logoText">Logo</h1>
+        </div>
         <AppBlock>
-          <Header>
-          </Header>
+          <Header/>
+          <MessageList/>
+          <MessageInput/>
         </AppBlock>
       </div>
     )

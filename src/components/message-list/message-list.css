@@ -7,4 +7,9 @@
     flex-grow: 1;
     margin-right: 3px;
   }
-  
+.botAvatar{
+  max-width: 150px;
+  max-height: 80px;
+  padding: 10px 30px 10px 7px;
+  border-radius: 140px 140px 140px 140px;
+}

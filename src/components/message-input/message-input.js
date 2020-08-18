@@ -1,21 +1,20 @@
 import React, {Component} from 'react';
 import './message-input.css';
+import styled from 'styled-components'
 
+const Title = styled.div`
+    width: 500px;
+`;
 export default class MessageInput extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            text: ''
-        };
-    }
-
     render() {
         return (
-                <button
-                    type="submit"
-                    className="btn- btn-outline-secondary">
-                    Добавить
-                </button>
+                <Title>
+                    <button
+                        type="submit"
+                        className="btn- btn-outline-secondary">
+                        Send
+                    </button>
+                </Title>
         )
     }
 }
