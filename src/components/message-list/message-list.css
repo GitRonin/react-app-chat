@@ -13,3 +13,24 @@
   padding: 10px 30px 10px 7px;
   border-radius: 140px 140px 140px 140px;
 }
+
+.valueText{
+  width: 400px;
+}
+
+.MessageData{
+  margin-top: 50px;
+}
+
+.heart{
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
+  font-size: 16px;
+  color: red;
+  transition: 0.3s all;
+  transform: translateX(30px);
+  background-color: blue;
+  opacity: 1;
+}
