@@ -18,7 +18,6 @@ export default class App extends Component {
       label: '123'
     }
   }
-
   render() {
     return (
       <>
@@ -36,7 +35,7 @@ export default class App extends Component {
         <AppBlock>
           <Header/>
           <MessageList/>
-          <MessageInput/>
+          <MessageInput onAdd={this.addItem}/>
         </AppBlock>
       </>
     )

@@ -29,44 +29,40 @@ class MessageList extends Component {
         super(props);
         this.state = {
             data: [
-                {id: 1, avatar: "", label: "My chat", data: "14:00", like: true},
-                {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
-                {id: 3, avatar: "", label: "messages", data: "16:00", like: true},
-                {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
-                {id: 5, avatar: "", label: "12321421", data: "18:00", like: false}
-            ]
+                {id: 1, avatar: "", label: "My chat", data: "14:00", like: 'heart'},
+                {id: 2, avatar: "", label: "participants", data: "15:00", like: ''},
+                {id: 3, avatar: "", label: "messages", data: "16:00", like: 'heart'},
+                {id: 4, avatar: "", label: "Last messager", data: "17:00", like: ''},
+                {id: 5, avatar: "", label: "12321421", data: "18:00", like: ''}
+            ],
+            name: 'Коля'
         };
-        this.onToggleLiked = this.onToggleLiked.bind(this);
+        // console.log(this.state.data);
     }
-    onToggleLiked() {
+    onToggleLiked(item) {
+        // this.setState({name: 'Толя'});
         this.setState(() => {
-            console.log('123');
-        });
+            if(item.like === 'heart') {
+                item.like = '';
+            }
+            else{
+                item.like = 'heart';
+            }
+        }); 
+        console.log(item.like);
     }
     render() {
-        const {onToggleLiked, like, id} = this.props;
-        let ClassNames = '';
-        if (like) ClassNames = 'heart';
-    // const ArrayMessages = [
-    //     {id: 1, avatar: "", label: "My chat", data: "14:00", like: true},
-    //     {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
-    //     {id: 3, avatar: "", label: "messages", data: "16:00", like: true},
-    //     {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
-    //     {id: 5, avatar: "", label: "12321421", data: "18:00", like: false}
-    // ];
 
-// const onToggleLiked = (item, id, ClassNames) => {
-//     this.setState ({item.like: !this.state.like});
-// };
     const elements = this.state.data.map((item) => {
         return  (
             <>
-            {/* item.like ? 'heart' : '' */}
-                <TitleContainer key={id} className={ClassNames} id="message" onClick={onToggleLiked}>
+            {/* () => this.onToggleLiked(item) */}
+                <TitleContainer key={item} className={item.like} id="message" onClick={this.onToggleLiked.bind(this, item)}>
                         <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
                         <p className="valueText" id="valueText">{item.label}</p>
                         <p className="MessageData">{item.data}</p>
                 </TitleContainer>
+                {/* <p>{this.state.name}</p> */}
             </>
         )
     });
