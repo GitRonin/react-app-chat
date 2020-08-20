@@ -21,11 +21,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <div>
           <div id="p_prldr">
-            <div class="contpre">
-              <span class="svg_anm"></span>
+            <div className="contpre">
+              <span className="svg_anm"></span>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@ export default class App extends Component {
           <MessageList/>
           <MessageInput/>
         </AppBlock>
-      </div>
+      </>
     )
   }
 }

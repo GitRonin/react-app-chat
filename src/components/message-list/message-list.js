@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import styled from 'styled-components';
 import { ListGroup } from 'reactstrap';
 import './message-list.css';
@@ -24,33 +24,45 @@ const TitleContainer = styled.div`
 
 
 
-const MessageList = () => {
-    const ArrayMessages = [
-        {id: 1, avatar: "", label: "My chat", data: "14:00", like: false},
-        {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
-        {id: 3, avatar: "", label: "messages", data: "16:00", like: true},
-        {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
-        {id: 5, avatar: "", label: "12321421", data: "18:00", like: false}
-    ];
-
-const onToggleLiked = (item, id) => {
-    // if (like) classNames += ' like';
-    if (id === item.id) {
-        if(item.like) {
-            item.like = false;
-        }
-        else{
-            item.like = true;
-        }
+class MessageList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [
+                {id: 1, avatar: "", label: "My chat", data: "14:00", like: true},
+                {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
+                {id: 3, avatar: "", label: "messages", data: "16:00", like: true},
+                {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
+                {id: 5, avatar: "", label: "12321421", data: "18:00", like: false}
+            ]
+        };
+        this.onToggleLiked = this.onToggleLiked.bind(this);
     }
-    
-}
+    onToggleLiked() {
+        this.setState(() => {
+            console.log('123');
+        });
+    }
+    render() {
+        const {onToggleLiked, like, id} = this.props;
+        let ClassNames = '';
+        if (like) ClassNames = 'heart';
+    // const ArrayMessages = [
+    //     {id: 1, avatar: "", label: "My chat", data: "14:00", like: true},
+    //     {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
+    //     {id: 3, avatar: "", label: "messages", data: "16:00", like: true},
+    //     {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
+    //     {id: 5, avatar: "", label: "12321421", data: "18:00", like: false}
+    // ];
 
-    const elements = ArrayMessages.map((item, id) => {
-        id++;
+// const onToggleLiked = (item, id, ClassNames) => {
+//     this.setState ({item.like: !this.state.like});
+// };
+    const elements = this.state.data.map((item) => {
         return  (
             <>
-                <TitleContainer className={item.like ? 'heart' : ''} id="message" onClick={() => onToggleLiked(item, id)}>
+            {/* item.like ? 'heart' : '' */}
+                <TitleContainer key={id} className={ClassNames} id="message" onClick={onToggleLiked}>
                         <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
                         <p className="valueText" id="valueText">{item.label}</p>
                         <p className="MessageData">{item.data}</p>
@@ -66,6 +78,7 @@ const onToggleLiked = (item, id) => {
             </Title>
         )   
     }
+}
 
     
 
