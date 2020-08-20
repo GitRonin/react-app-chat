@@ -37,10 +37,13 @@ class MessageList extends Component {
             ],
             name: 'Коля'
         };
-        // console.log(this.state.data);
+        console.log(this.state.data[0].like);
     }
     onToggleLiked(item) {
         // this.setState({name: 'Толя'});
+
+        // this.setState({item.like = ''});
+        
         this.setState(() => {
             if(item.like === 'heart') {
                 item.like = '';
