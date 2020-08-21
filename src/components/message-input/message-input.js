@@ -17,10 +17,10 @@ export default class MessageInput extends Component {
         }
         console.log(newItem);
         this.setState(({data}) => {
-            const newArr = [...data, newItem];
-            return {
-                data: newArr
-            }
+            // const newArr = [...data, newItem];
+            // return {
+            //     data: newArr
+            // }
         })
     }
     onValueChange(e) {

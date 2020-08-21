@@ -23,14 +23,14 @@
 }
 
 .heart{
-  width: 35px;
-  height: 35px;
+  width: 32px;
+  height: 32px;
   text-align: center;
   line-height: 35px;
   font-size: 16px;
   color: red;
   transition: 0.3s all;
   transform: translateX(30px);
-  background-color: blue;
   opacity: 1;
+  background-image: url("./heart.png");
 }
