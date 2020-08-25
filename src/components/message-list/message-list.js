@@ -131,18 +131,19 @@ export default class MessageList extends Component {
             )
         }
         else{
+
             const index = data.findIndex(elem => elem.id === item.id);
             if(data[index - 1] !== undefined){
-                const nowFirst = data[index].data.slice(0, -3); //now data
-                const nowTwo = data[index].data.slice(-2); //now data
-                const previousFirst = data[index - 1].data.slice(0, -3); //previous data
-                const previousTwo = data[index - 1].data.slice(-2); //previous data
-                // console.log(`текущий 1-  ${nowFirst}    предыдущий 1- ${previousFirst}  ${index}`);
-                // console.log(`текущий 2-  ${nowTwo}   предыдущий 2- ${previousTwo}`);
-                if( nowFirst < previousFirst && nowFirst < previousTwo ) {console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)}
+                const nowFirst = Number(data[index].data.slice(0, -3)); //now data
+                const nowTwo = Number(data[index].data.slice(-2)); //now data
+                const previousFirst = Number(data[index - 1].data.slice(0, -3)); //previous data
+                const previousTwo = Number(data[index - 1].data.slice(-2)); //previous data
+                if( nowFirst < previousFirst && nowTwo < previousTwo ) console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
+                // console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
             }
             return  (
                 <div key={item.id}>
+                    <hr id="elem" className="Yesterday"/>
                 <TitleContainerFlex>
                     <TitleContainer id="message" onClick={() => this.onToggleLiked(item.id)}>
                             <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>

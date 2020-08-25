@@ -67,3 +67,7 @@
   background-image: url("./edit.svg");
   cursor: pointer;
 }
+
+.Yesterday{
+  display: none;
+}
