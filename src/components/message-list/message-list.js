@@ -43,9 +43,9 @@ export default class MessageList extends Component {
                 {id: 1, avatar: "", label: "Доброе утро!", data: "9:00", like: false},
                 {id: 2, avatar: "", label: "Здравствуйте!", data: "9:15", like: false},
                 {id: 3, avatar: "", label: "Как Ваши дела?", data: "10:00", like: false},
-                {id: 4, avatar: "", label: "Неплохо! Как вы поживаете, как здоровье?", data: "10:50", like: false},
-                {id: 5, avatar: "", label: "Отлично! Спасибо, что поинтересовались.", data: "11:00", like: false},
-                {id: 6, avatar: "", label: "Ну, право. До свидания, рад был повидаться!", data: "11:20", like: false}
+                {id: 4, avatar: "", label: "Неплохо! Как вы поживаете, как здоровье?", data: "11:25", like: false},
+                {id: 5, avatar: "", label: "Отлично! Спасибо, что поинтересовались.", data: "12:10", like: false},
+                {id: 6, avatar: "", label: "Ну, право. До свидания, рад был повидаться!", data: "11:00", like: false}
             ],
         };
         this.id = 7;
@@ -113,8 +113,8 @@ export default class MessageList extends Component {
     const participants = 10;
     const messages = data.length;
     const lastMessage = data[messages - 1].data;
-    const elements = data.map((item, id) => {
-        if(item.own === true)  {
+    const elements = data.map((item) => {
+        if(item.own){
             return(
                 <div key={item.id}>
                 <TitleContainerFlexCopied2>
@@ -131,6 +131,16 @@ export default class MessageList extends Component {
             )
         }
         else{
+            const index = data.findIndex(elem => elem.id === item.id);
+            if(data[index - 1] !== undefined){
+                const nowFirst = data[index].data.slice(0, -3); //now data
+                const nowTwo = data[index].data.slice(-2); //now data
+                const previousFirst = data[index - 1].data.slice(0, -3); //previous data
+                const previousTwo = data[index - 1].data.slice(-2); //previous data
+                // console.log(`текущий 1-  ${nowFirst}    предыдущий 1- ${previousFirst}  ${index}`);
+                // console.log(`текущий 2-  ${nowTwo}   предыдущий 2- ${previousTwo}`);
+                if( nowFirst < previousFirst && nowFirst < previousTwo ) {console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)}
+            }
             return  (
                 <div key={item.id}>
                 <TitleContainerFlex>
