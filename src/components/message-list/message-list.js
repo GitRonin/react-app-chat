@@ -58,10 +58,33 @@ export default class MessageList extends Component {
     onToggleLiked(id) {
         this.setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
-            console.log(index);
             const old = data[index]; 
             const newItem = {...old, like: !old.like};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+            return {
+                data: newArr
+            }
+        });
+    }
+    onEdit(id) {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+            const old = data[index]; 
+            const newLabel = prompt("Edit");
+            const newItem = {...old, label: newLabel};
+            const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+            return {
+                data: newArr
+            }
+        });
+    }
+    
+    onDelete(id) {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+            const before = data.slice(0, index);
+            const after = data.slice(index + 1);
+            const newArr = [...before, ...after];
             return {
                 data: newArr
             }
@@ -83,21 +106,6 @@ export default class MessageList extends Component {
                 data: newArr
             }
         })
-    }
-
-    onDelete(id) {
-        this.setState(({data}) => {
-            const index = data.findIndex(elem => elem.id === id);
-            const before = data.slice(0, index);
-            const after = data.slice(index + 1);
-            const newArr = [...before, ...after];
-            return {
-                data: newArr
-            }
-        });
-    }
-
-    onEdit(id) {
     }
 
     render() {
