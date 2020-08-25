@@ -58,6 +58,7 @@ export default class MessageList extends Component {
     onToggleLiked(id) {
         this.setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
+            console.log(index);
             const old = data[index]; 
             const newItem = {...old, like: !old.like};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
@@ -107,30 +108,32 @@ export default class MessageList extends Component {
     const elements = data.map((item, id) => {
         if(item.own === true)  {
             return(
+                <div key={item.id}>
                 <TitleContainerFlexCopied2>
                     <p className={item.like ? 'heartcopied2' : ''}></p>
-                        <image className="btn-edit" onClick={() => this.onEdit(item.id)}/>
-                        <image className="btn-delete" onClick={() => this.onDelete(item.id)}/>
-                    <TitleContainer className="marginFromMessage" key={id} id="message" onClick={() => this.onToggleLiked(item.id)}>
+                        <p className="btn-edit" onClick={() => this.onEdit(item.id)}/>
+                        <p className="btn-delete" onClick={() => this.onDelete(item.id)}/>
+                    <TitleContainer className="marginFromMessage" id="message" onClick={() => this.onToggleLiked(item.id)}>
                             <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
                             <p className="valueText" id="valueText">{item.label}</p>
                             <p className="MessageData">{item.data}</p>
                     </TitleContainer>
                 </TitleContainerFlexCopied2>
+                </div>
             )
         }
         else{
             return  (
-                <>
+                <div key={item.id}>
                 <TitleContainerFlex>
-                    <TitleContainer key={id} id="message" onClick={() => this.onToggleLiked(item.id)}>
+                    <TitleContainer id="message" onClick={() => this.onToggleLiked(item.id)}>
                             <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
                             <p className="valueText" id="valueText">{item.label}</p>
                             <p className="MessageData">{item.data}</p>
                     </TitleContainer>
                     <p className={item.like ? 'heart' : ''}></p>
                 </TitleContainerFlex>
-                </>
+                </div>
             )
         }
     });
