@@ -1,7 +1,9 @@
 import React from 'react';
+// import MessageList from '../message-list';
 import './header.css';
 import styled from 'styled-components';
 
+// console.log(MessageList.test());
 const Title = styled.div`
     border: 1px solid;
     margin 0px 0px 10px 0px;
@@ -19,15 +21,13 @@ const Title = styled.div`
         color: grey;
     }
 `;
-// like, allPosts
-const Header = ({users, messages, lastData}) => {
+const Header = ({participants, messages, lastMessage}) => {
     return (
         <Title>
             <h1>My Chat</h1>
-            <h2>{users}23 participants</h2>
-            <h2>{messages}53 messages</h2>
-            <h2>Last message at 14:28{lastData}</h2>
-            {/* <h2>{allPosts} записей, из них понравилось {like}</h2> */}
+            <h2>{participants} participants</h2>
+            <h2> {messages} messages</h2>
+            <h2>Last message at {lastMessage}</h2>
         </Title>
     )
 }

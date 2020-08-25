@@ -34,3 +34,36 @@
   opacity: 1;
   background-image: url("./heart.png");
 }
+
+.heartcopied2{
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  line-height: 35px;
+  font-size: 16px;
+  color: red;
+  transition: 0.3s all;
+  transform: translateX(30px);
+  opacity: 1;
+  background-image: url("./heart.png");
+  margin-right: 35px;
+}
+
+.marginFromMessage{
+  margin-left:5px;
+}
+
+.btn-delete{
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  background-image: url("./delete.svg");
+  cursor: pointer;
+}
+
+.btn-edit{
+  width: 30px;
+  height: 30px;
+  background-image: url("./edit.svg");
+  cursor: pointer;
+}

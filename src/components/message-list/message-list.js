@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
+import MessageInput from '../message-input';
+import Header from '../header';
 import styled from 'styled-components';
-import { ListGroup } from 'reactstrap';
 import './message-list.css';
 import botAvatar from './botAvatar.svg';
 
 const Title = styled.div`
     border: 2px solid;
-    overflow: scroll;
+    scroll-behavior: unset;
     max-height: 360px;
     border-radius: 3px;
+    overflow: scroll;
 `;
 const TitleContainer = styled.div`
     width: 500px;
@@ -27,24 +29,31 @@ const TitleContainerFlex = styled.div`
     margin: 40px 10px 5px 5px;
 `;
 
-
-class MessageList extends Component {
+const TitleContainerFlexCopied2 = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin: 40px 10px 5px 5px;
+`;
+// const allmes = this.state.data.length;
+export default class MessageList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: [
-                {id: 1, avatar: "", label: "My chat", data: "14:00", like: false},
-                {id: 2, avatar: "", label: "participants", data: "15:00", like: false},
-                {id: 3, avatar: "", label: "messages", data: "16:00", like: false},
-                {id: 4, avatar: "", label: "Last messager", data: "17:00", like: false},
-                {id: 5, avatar: "", label: "12321421", data: "18:00", like: false},
-                {id: 6, avatar: "", label: "12321421", data: "18:00", like: false}
+                {id: 1, avatar: "", label: "Доброе утро!", data: "9:00", like: false},
+                {id: 2, avatar: "", label: "Здравствуйте!", data: "9:15", like: false},
+                {id: 3, avatar: "", label: "Как Ваши дела?", data: "10:00", like: false},
+                {id: 4, avatar: "", label: "Неплохо! Как вы поживаете, как здоровье?", data: "10:50", like: false},
+                {id: 5, avatar: "", label: "Отлично! Спасибо, что поинтересовались.", data: "11:00", like: false},
+                {id: 6, avatar: "", label: "Ну, право. До свидания, рад был повидаться!", data: "11:20", like: false}
             ],
         };
+        this.id = 7;
+
         this.onToggleLiked = this.onToggleLiked.bind(this);
-        // this.filterPost = this.filterPost.bind(this);
-        // this.onFilterSelect = this.onFilterSelect.bind(this);
-        // this.searchPost = this.searchPost.bind(this);
+        this.onAdd = this.onAdd.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onEdit = this.onEdit.bind(this);
     }
     onToggleLiked(id) {
         this.setState(({data}) => {
@@ -58,50 +67,83 @@ class MessageList extends Component {
         });
     }
 
-    // filterPost(items, filter) {
-    //     if(filter === 'like') return items.filter(item => item.like);
-    //     else return items;
-    // }
+    onAdd(labelText) {
+        const nowData = new Date().toLocaleTimeString().slice(0,-3);
+        const newItem = {
+            label: labelText,
+            data: nowData,
+            like: false,
+            id: this.id++,
+            own: true
+        }
+        this.setState(({data}) => {
+            const newArr = [...data, newItem];
+            return {
+                data: newArr
+            }
+        })
+    }
 
-    // onFilterSelect(filter) {
-    //     this.setState({filter});
-    // }
+    onDelete(id) {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+            const before = data.slice(0, index);
+            const after = data.slice(index + 1);
+            const newArr = [...before, ...after];
+            return {
+                data: newArr
+            }
+        });
+    }
 
-    // searchPost(items, term) {
-    //     if (term.length === 0) return items
-    //     return items.filter((item) => {
-    //         return item.label.indexOf(term) > -1
-    //     })
-    // }
+    onEdit(id) {
+    }
 
     render() {
-        // const {term, filter} = this.state.data;
-        // const liked = data.filter(item => item.like).length;
-        // const allPosts = data.length;
-        // const visiblePosts = this.filterPost(this.searchPost(data, term), filter);
-
-    const elements = this.state.data.map((item) => {
-        return  (
-            <TitleContainerFlex>
-                <TitleContainer key={item.id} id="message" onClick={() => this.onToggleLiked(item.id)}>
-                        <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
-                        <p className="valueText" id="valueText">{item.label}</p>
-                        <p className="MessageData">{item.data}</p>
-                </TitleContainer>
-                <p className={item.like ? 'heart' : ''}></p>
-            </TitleContainerFlex>
-        )
+    const {data} = this.state;
+    const participants = 10;
+    const messages = data.length;
+    const lastMessage = data[messages - 1].data;
+    const elements = data.map((item, id) => {
+        if(item.own === true)  {
+            return(
+                <TitleContainerFlexCopied2>
+                    <p className={item.like ? 'heartcopied2' : ''}></p>
+                        <image className="btn-edit" onClick={() => this.onEdit(item.id)}/>
+                        <image className="btn-delete" onClick={() => this.onDelete(item.id)}/>
+                    <TitleContainer className="marginFromMessage" key={id} id="message" onClick={() => this.onToggleLiked(item.id)}>
+                            <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
+                            <p className="valueText" id="valueText">{item.label}</p>
+                            <p className="MessageData">{item.data}</p>
+                    </TitleContainer>
+                </TitleContainerFlexCopied2>
+            )
+        }
+        else{
+            return  (
+                <>
+                <TitleContainerFlex>
+                    <TitleContainer key={id} id="message" onClick={() => this.onToggleLiked(item.id)}>
+                            <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
+                            <p className="valueText" id="valueText">{item.label}</p>
+                            <p className="MessageData">{item.data}</p>
+                    </TitleContainer>
+                    <p className={item.like ? 'heart' : ''}></p>
+                </TitleContainerFlex>
+                </>
+            )
+        }
     });
         return(
-            <Title>
-                <ListGroup>
+            <>
+                <Header participants={participants}
+                        messages={messages}
+                        lastMessage={lastMessage}/>
+                <Title>
                     {elements}
-                </ListGroup>
-            </Title>
+                </Title>
+                <MessageInput className="Mymessage" onAdd={this.onAdd}/>
+            </>
         )   
     }
 }
-
-    
-
-export default MessageList;

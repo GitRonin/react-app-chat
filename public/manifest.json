@@ -24,6 +24,10 @@
     {
       "src": "../src/components/app/logo.svg",
       "type": "image/svg"
+    },
+    {
+      "src": "../src/components/message-list/delete.svg",
+      "type": "image/svg"
     }
   ],
   "start_url": ".",

@@ -1,6 +1,4 @@
-import React, {Component} from 'react'; //Suspense, lazy
-import Header from '../header';
-import MessageInput from '../message-input';
+import React, {Component} from 'react';
 import MessageList from '../message-list';
 import logo from './logo.svg';
 import './app.css';
@@ -16,7 +14,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       label: '123'
-    }
+    };
   }
   render() {
     return (
@@ -33,9 +31,7 @@ export default class App extends Component {
           <h1 className="logoText">Logo</h1>
         </div>
         <AppBlock>
-          <Header/>
           <MessageList/>
-          <MessageInput onAdd={this.addItem}/>
         </AppBlock>
       </>
     )

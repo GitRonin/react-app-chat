@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './message-input.css';
 
-export default class MessageInput extends Component {
+export default  class MessageInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,19 +9,6 @@ export default class MessageInput extends Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onValueChange = this.onValueChange.bind(this);
-        // this.onAdd = this.onAdd.bind(this);
-    }
-    onAdd(body) {
-        const newItem = {
-            label: body
-        }
-        console.log(newItem);
-        this.setState(({data}) => {
-            // const newArr = [...data, newItem];
-            // return {
-            //     data: newArr
-            // }
-        })
     }
     onValueChange(e) {
         this.setState({
@@ -30,7 +17,7 @@ export default class MessageInput extends Component {
     }
     onSubmit(e) {
         e.preventDefault();
-        this.onAdd(this.state.text);
+        this.props.onAdd(this.state.text);
         this.setState({
             text: ''
         });
