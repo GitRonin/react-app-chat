@@ -40,12 +40,12 @@ export default class MessageList extends Component {
         super(props);
         this.state = {
             data: [
-                {id: 1, avatar: "", label: "Доброе утро!", data: "9:00", like: false},
-                {id: 2, avatar: "", label: "Здравствуйте!", data: "9:15", like: false},
-                {id: 3, avatar: "", label: "Как Ваши дела?", data: "10:00", like: false},
-                {id: 4, avatar: "", label: "Неплохо! Как вы поживаете, как здоровье?", data: "11:25", like: false},
-                {id: 5, avatar: "", label: "Отлично! Спасибо, что поинтересовались.", data: "12:10", like: false},
-                {id: 6, avatar: "", label: "Ну, право. До свидания, рад был повидаться!", data: "11:00", like: false}
+                {id: 1, avatar: "", label: "Good morning!", data: "9:00", like: false},
+                {id: 2, avatar: "", label: "Hello!", data: "9:15", like: false},
+                {id: 3, avatar: "", label: "How are you doing?", data: "10:00", like: false},
+                {id: 4, avatar: "", label: "Not bad! How are you, how are you?", data: "11:25", like: false},
+                {id: 5, avatar: "", label: "Fine! Thank you for asking.", data: "12:10", like: false},
+                {id: 6, avatar: "", label: "Well, right. Goodbye, I was glad to see you!", data: "11:00", like: false}
             ],
         };
         this.id = 7;
