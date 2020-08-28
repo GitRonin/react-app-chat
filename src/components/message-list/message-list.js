@@ -1,53 +1,23 @@
 import React, {Component} from 'react';
 import MessageInput from '../message-input';
 import Header from '../header';
-import styled from 'styled-components';
 import './message-list.css';
 import botAvatar from './botAvatar.svg';
 
-const Title = styled.div`
-    border: 2px solid;
-    scroll-behavior: unset;
-    max-height: 360px;
-    border-radius: 3px;
-    overflow: scroll;
-`;
-const TitleContainer = styled.div`
-    width: 500px;
-    height: 80px;
-    border: 1px solid;
-    background-color: #E6E6E6;
-    display: flex;
-    padding: 0px 10px 0px 0px;
-    line-height: 35px;
-    transition: 0.5s all;
-    cursor: pointer;
-    user-select: none;
-`;
-const TitleContainerFlex = styled.div`
-    display: flex;
-    margin: 40px 10px 5px 5px;
-`;
-
-const TitleContainerFlexCopied2 = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    margin: 40px 10px 5px 5px;
-`;
-// const allmes = this.state.data.length;
 export default class MessageList extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            data: [
-                {id: 1, avatar: "", label: "Good morning!", data: "9:00", like: false},
-                {id: 2, avatar: "", label: "Hello!", data: "9:15", like: false},
-                {id: 3, avatar: "", label: "How are you doing?", data: "10:00", like: false},
-                {id: 4, avatar: "", label: "Not bad! How are you, how are you?", data: "11:25", like: false},
-                {id: 5, avatar: "", label: "Fine! Thank you for asking.", data: "12:10", like: false},
-                {id: 6, avatar: "", label: "Well, right. Goodbye, I was glad to see you!", data: "11:00", like: false}
-            ],
+            data: [],
         };
+        const a = this;
+        const request = new XMLHttpRequest();
+        request.open("GET", 'http://localhost:3040/messages', false);
+        request.onload = function jsonfunc() {
+        a.state.data =  JSON.parse(request.response);
+      }
+      request.send();
         this.id = 7;
 
         this.onToggleLiked = this.onToggleLiked.bind(this);
@@ -71,7 +41,7 @@ export default class MessageList extends Component {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index]; 
             const newLabel = prompt("Edit");
-            const newItem = {...old, label: newLabel};
+            const newItem = {...old, text: newLabel};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
@@ -93,9 +63,10 @@ export default class MessageList extends Component {
 
     onAdd(labelText) {
         const nowData = new Date().toLocaleTimeString().slice(0,-3);
+        const nowDataChange = `12345678910${nowData}12345678`;
         const newItem = {
-            label: labelText,
-            data: nowData,
+            text: labelText,
+            createdAt: nowDataChange,
             like: false,
             id: this.id++,
             own: true
@@ -110,60 +81,72 @@ export default class MessageList extends Component {
 
     render() {
     const {data} = this.state;
-    const participants = 10;
     const messages = data.length;
-    const lastMessage = data[messages - 1].data;
-    const elements = data.map((item) => {
+    const lastMessage = data[messages - 1].createdAt.slice(11, -8);
+    var participantsArr = [];
+    var participants;
+    const elements = data.map((item, index) => {
+            participantsArr[index] = item.userId;
+            participants = new Set(participantsArr);
+            participants = participants.size;
         if(item.own){
             return(
                 <div key={item.id}>
-                <TitleContainerFlexCopied2>
-                    <p className={item.like ? 'heartcopied2' : ''}></p>
-                        <p className="btn-edit" onClick={() => this.onEdit(item.id)}/>
-                        <p className="btn-delete" onClick={() => this.onDelete(item.id)}/>
-                    <TitleContainer className="marginFromMessage" id="message" onClick={() => this.onToggleLiked(item.id)}>
-                            <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
-                            <p className="valueText" id="valueText">{item.label}</p>
-                            <p className="MessageData">{item.data}</p>
-                    </TitleContainer>
-                </TitleContainerFlexCopied2>
+                <div className="TitleContainerFlexCopied2">
+                    <div className="btns-style">
+                            <p className="MessageWasEdited">(edited)</p>
+                        <div className="btns-style-btn">
+                            <p className="btn-edit" onClick={() => this.onEdit(item.id)}/>
+                            <p className="btn-delete" onClick={() => this.onDelete(item.id)}/>
+                        </div>
+                    </div>
+
+                    <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
+                            <img className="MessageAvatar" src={botAvatar} alt="Bot Avatar"/>
+                            <p className="MessageName">You</p>
+                            <p className="MessageText" id="valueText">{item.text}</p>
+                            <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
+                    </div>
+                </div>
                 </div>
             )
         }
         else{
-
-            const index = data.findIndex(elem => elem.id === item.id);
-            if(data[index - 1] !== undefined){
-                const nowFirst = Number(data[index].data.slice(0, -3)); //now data
-                const nowTwo = Number(data[index].data.slice(-2)); //now data
-                const previousFirst = Number(data[index - 1].data.slice(0, -3)); //previous data
-                const previousTwo = Number(data[index - 1].data.slice(-2)); //previous data
-                if( nowFirst < previousFirst && nowTwo < previousTwo ) console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
-                // console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
-            }
+            // const index = data.findIndex(elem => elem.id === item.id);
+            // if(data[index - 1] !== undefined){
+            //     const nowFirst = Number(data[index].createdAt.slice(0, -3)); //now data
+            //     const nowTwo = Number(data[index].createdAt.slice(-2)); //now data
+            //     const previousFirst = Number(data[index - 1].createdAt.slice(0, -3)); //previous data
+            //     const previousTwo = Number(data[index - 1].createdAt.slice(-2)); //previous data
+            //     if( nowFirst < previousFirst && nowTwo < previousTwo ) console.log(` ${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
+            //     // console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
+            // }
             return  (
                 <div key={item.id}>
-                    <hr id="elem" className="Yesterday"/>
-                <TitleContainerFlex>
-                    <TitleContainer id="message" onClick={() => this.onToggleLiked(item.id)}>
-                            <img className="botAvatar" src={botAvatar} alt="Bot Avatar"/>
-                            <p className="valueText" id="valueText">{item.label}</p>
-                            <p className="MessageData">{item.data}</p>
-                    </TitleContainer>
+                    {/* <hr id="elem" className="BeetwenMessages"/> */}
+                <div className="TitleContainerFlex">
+                    <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
+                            <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
+                            <p className="MessageName">{item.user}</p>
+                            <p className="MessageText" id="valueText">{item.text}</p>
+                            <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
+                    </div>
                     <p className={item.like ? 'heart' : ''}></p>
-                </TitleContainerFlex>
+                </div>
                 </div>
             )
         }
     });
         return(
             <>
-                <Header participants={participants}
+                <Header 
+                participants={participants}
                         messages={messages}
-                        lastMessage={lastMessage}/>
-                <Title>
+                        lastMessage={lastMessage}
+                        />
+                <p class="title">
                     {elements}
-                </Title>
+                </p>
                 <MessageInput className="Mymessage" onAdd={this.onAdd}/>
             </>
         )   
