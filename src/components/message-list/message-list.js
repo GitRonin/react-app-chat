@@ -3,6 +3,7 @@ import MessageInput from '../message-input';
 import Header from '../header';
 import './message-list.css';
 import botAvatar from './botAvatar.svg';
+// import MessageService from '../../message-service.js';
 
 export default class MessageList extends Component {
     constructor(props) {
@@ -11,19 +12,21 @@ export default class MessageList extends Component {
         this.state = {
             data: [],
         };
+        
         const a = this;
         const request = new XMLHttpRequest();
         request.open("GET", 'http://localhost:3040/messages', false);
         request.onload = function jsonfunc() {
-        a.state.data =  JSON.parse(request.response);
-      }
-      request.send();
+            a.state.data =  JSON.parse(request.response);
+        }
+        request.send();
         this.id = 7;
 
         this.onToggleLiked = this.onToggleLiked.bind(this);
         this.onAdd = this.onAdd.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onEdit = this.onEdit.bind(this);
+        // console.log(MessageService);
     }
     onToggleLiked(id) {
         this.setState(({data}) => {
@@ -41,14 +44,13 @@ export default class MessageList extends Component {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index]; 
             const newLabel = prompt("Edit");
-            const newItem = {...old, text: newLabel};
+            const newItem = {...old, text: newLabel, editedAt: newLabel};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
             }
         });
     }
-    
     onDelete(id) {
         this.setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
@@ -69,7 +71,8 @@ export default class MessageList extends Component {
             createdAt: nowDataChange,
             like: false,
             id: this.id++,
-            own: true
+            own: true,
+            editedAt: ""
         }
         this.setState(({data}) => {
             const newArr = [...data, newItem];
@@ -94,14 +97,14 @@ export default class MessageList extends Component {
                 <div key={item.id}>
                 <div className="TitleContainerFlexCopied2">
                     <div className="btns-style">
-                            <p className="MessageWasEdited">(edited)</p>
+                            <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
                         <div className="btns-style-btn">
                             <p className="btn-edit" onClick={() => this.onEdit(item.id)}/>
                             <p className="btn-delete" onClick={() => this.onDelete(item.id)}/>
                         </div>
                     </div>
 
-                    <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
+                    <div className="TitleMessages" id="message">
                             <img className="MessageAvatar" src={botAvatar} alt="Bot Avatar"/>
                             <p className="MessageName">You</p>
                             <p className="MessageText" id="valueText">{item.text}</p>
@@ -112,27 +115,19 @@ export default class MessageList extends Component {
             )
         }
         else{
-            // const index = data.findIndex(elem => elem.id === item.id);
-            // if(data[index - 1] !== undefined){
-            //     const nowFirst = Number(data[index].createdAt.slice(0, -3)); //now data
-            //     const nowTwo = Number(data[index].createdAt.slice(-2)); //now data
-            //     const previousFirst = Number(data[index - 1].createdAt.slice(0, -3)); //previous data
-            //     const previousTwo = Number(data[index - 1].createdAt.slice(-2)); //previous data
-            //     if( nowFirst < previousFirst && nowTwo < previousTwo ) console.log(` ${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
-            //     // console.log(`${nowFirst}:${nowTwo}<${previousFirst}:${previousTwo}`)
-            // }
             return  (
                 <div key={item.id}>
                     {/* <hr id="elem" className="BeetwenMessages"/> */}
-                <div className="TitleContainerFlex">
-                    <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
-                            <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
-                            <p className="MessageName">{item.user}</p>
-                            <p className="MessageText" id="valueText">{item.text}</p>
-                            <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
+                    <div className="TitleContainerFlex">
+                        <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
+                                <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
+                                <p className="MessageName">{item.user}</p>
+                                <p className="MessageText" id="valueText">{item.text}</p>
+                                <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
+                        </div>
+                        <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
+                        <p className={item.like ? 'heart' : ''}></p>
                     </div>
-                    <p className={item.like ? 'heart' : ''}></p>
-                </div>
                 </div>
             )
         }
