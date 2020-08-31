@@ -97,10 +97,29 @@ export default class MessageList extends Component {
             participantsArr[index] = item.userId;
             participants = new Set(participantsArr);
             participants = participants.size;
+            var TodayYesterday = false;
+
+
+            if(data[index - 1] !== undefined){
+                const nowYear = data[index].createdAt.slice(0, -20);
+                const nowMouth = data[index].createdAt.slice(5, -17);
+                const nowDay = data[index].createdAt.slice(8, -14);
+                if(nowYear === data[index - 1].createdAt.slice(0, -20) && nowMouth === data[index - 1].createdAt.slice(5, -17) && nowDay === data[index - 1].createdAt.slice(8, -14)) {
+                                const nowHours = Number(data[index].createdAt.slice(11, -11));
+                                const previousHours = Number(data[index - 1].createdAt.slice(11, -11));
+                                nowHours < previousHours ? TodayYesterday = true : TodayYesterday = false;
+                }
+                else{TodayYesterday = true}
+            }
         if(item.own){
             return(
                 <div key={item.id}>
-                    {/* <p className={item.createdAt.slice()}/> */}
+                    <p className={TodayYesterday ? "whenTrue" : "whenFalse"}>
+                        <hr className="WhenTrueHR" color="black" noshade/>
+                        <div className="WhenTrueDivText">
+                            <p className="WhenTrueText">Yesterday</p>
+                        </div>
+                    </p>
                 <div className="TitleContainerFlexCopied2">
                     <div className="btns-style">
                             <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
@@ -123,7 +142,9 @@ export default class MessageList extends Component {
         else{
             return  (
                 <div key={item.id}>
-                    <p className={() => this.onTodayYesterday(item.id)}/>
+                    <p className={TodayYesterday ? "whenTrue" : "whenFalse"}>
+                        <hr className="WhenTrueHR" color="black"/>
+                    </p>
                     <div className="TitleContainerFlex">
                         <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
                                 <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>

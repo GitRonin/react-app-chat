@@ -64,6 +64,32 @@
 .MessageWasEditedNone{
   display: none;
 }
+.whenTrue{
+  display: flex;
+  flex-direction: column;
+}
+.WhenTrueHR{
+  position: relative;
+  width: 880px;
+}
+.WhenTrueDivText{
+  margin-left: 350px;
+  margin-top: -36px;
+  max-width: fit-content;
+  z-index: 1;
+}
+.WhenTrueText{
+  color: white;
+  background-color: black;
+  border-radius: 5px;
+  border: solid 10px black;
+  z-index: 2;
+  font-size: 14px;
+  font-weight: bold;
+}
+.whenFalse{
+  display: none;
+}
 /* BLOCK MESSAGE */
 /* BUTTONS */
 .btn-delete{
