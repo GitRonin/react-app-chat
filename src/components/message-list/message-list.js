@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import MessageInput from '../message-input';
 import Header from '../header';
 import './message-list.css';
-import botAvatar from './botAvatar.svg';
 // import MessageService from '../../message-service.js';
 
 export default class MessageList extends Component {
@@ -41,10 +40,13 @@ export default class MessageList extends Component {
     }
     onEdit(id) {
         this.setState(({data}) => {
+            const nowDataFull = new Date().toISOString();
+            const nowData = new Date().getHours();
+            const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index]; 
             const newLabel = prompt("Edit");
-            const newItem = {...old, text: newLabel, editedAt: newLabel};
+            const newItem = {...old, text: newLabel, editedAt: nowDataTrue};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
@@ -64,15 +66,18 @@ export default class MessageList extends Component {
     }
 
     onAdd(labelText) {
-        const nowData = new Date().toLocaleTimeString().slice(0,-3);
-        const nowDataChange = `12345678910${nowData}12345678`;
+        const nowDataFull = new Date().toISOString();
+        const nowData = new Date().getHours();
+        const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
         const newItem = {
-            text: labelText,
-            createdAt: nowDataChange,
-            like: false,
             id: this.id++,
-            own: true,
-            editedAt: ""
+            userId: "",
+            avatar: "https://ru.botlibre.com/images/avatar.png",
+            user: "You",
+            text: labelText,
+            createdAt: nowDataTrue,
+            editedAt: "",
+            own: true
         }
         this.setState(({data}) => {
             const newArr = [...data, newItem];
@@ -95,6 +100,7 @@ export default class MessageList extends Component {
         if(item.own){
             return(
                 <div key={item.id}>
+                    {/* <p className={item.createdAt.slice()}/> */}
                 <div className="TitleContainerFlexCopied2">
                     <div className="btns-style">
                             <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
@@ -105,8 +111,8 @@ export default class MessageList extends Component {
                     </div>
 
                     <div className="TitleMessages" id="message">
-                            <img className="MessageAvatar" src={botAvatar} alt="Bot Avatar"/>
-                            <p className="MessageName">You</p>
+                            <img className="MessageAvatar" src={item.avatar} alt="Bot Avatar"/>
+                            <p className="MessageName">{item.user}</p>
                             <p className="MessageText" id="valueText">{item.text}</p>
                             <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
                     </div>
@@ -117,7 +123,7 @@ export default class MessageList extends Component {
         else{
             return  (
                 <div key={item.id}>
-                    {/* <hr id="elem" className="BeetwenMessages"/> */}
+                    <p className={() => this.onTodayYesterday(item.id)}/>
                     <div className="TitleContainerFlex">
                         <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
                                 <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
