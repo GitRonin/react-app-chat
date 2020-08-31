@@ -96,7 +96,7 @@
   width: 30px;
   height: 30px;
   margin-left: 5px;
-  background-image: url("./delete.svg");
+  background-image: url("../../image/delete.svg");
   cursor: pointer;
 }
 .heart{
@@ -109,7 +109,7 @@
   transition: 0.3s all;
   transform: translateX(30px);
   opacity: 1;
-  background-image: url("./heart.png");
+  background-image: url("../../image/heart.png");
 }
 .heartcopied2{
   width: 32px;
@@ -121,13 +121,13 @@
   transition: 0.3s all;
   transform: translateX(30px);
   opacity: 1;
-  background-image: url("./heart.png");
+  background-image: url("../../image/heart.png");
   margin-right: 35px;
 }
 .btn-edit{
   width: 30px;
   height: 30px;
-  background-image: url("./edit.svg");
+  background-image: url("../../image/edit.svg");
   cursor: pointer;
 }
 .btns-style{

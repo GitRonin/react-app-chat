@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MessageList from '../message-list';
-import logo from './logo.svg';
+import logo from '../../image/logo.svg';
 import './app.css';
 import styled from 'styled-components';
 
