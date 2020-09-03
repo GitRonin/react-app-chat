@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import MessageInput from '../message-input';
 import Header from '../header';
 import './message-list.css';
-// import MessageService from '../../message-service.js';
+import axios from 'axios';
 
 export default class MessageList extends Component {
     constructor(props) {
@@ -11,15 +11,27 @@ export default class MessageList extends Component {
         this.state = {
             data: [],
         };
-        
-        const a = this;
-        const request = new XMLHttpRequest();
-        request.open("GET", 'http://localhost:3040/messages', false);
-        request.onload = function jsonfunc() {
-            a.state.data =  JSON.parse(request.response);
-        }
-        request.send();
-        this.id = 7;
+        this.id = 0;
+
+        // const a = this;
+        // const request = new XMLHttpRequest();
+        // request.open("GET", 'http://localhost:3040/messages', false);
+        // request.onload = function jsonfunc() {
+        //     a.state.data =  JSON.parse(request.response);
+        // }
+        // request.send();
+
+
+        var dataState = this.state.data;
+        axios.get('http://localhost:3040/messages')
+            .then(function(response) {
+                dataState = response.data;
+                console.log(dataState);
+                
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
 
         this.onToggleLiked = this.onToggleLiked.bind(this);
         this.onAdd = this.onAdd.bind(this);
@@ -27,6 +39,14 @@ export default class MessageList extends Component {
         this.onEdit = this.onEdit.bind(this);
         // console.log(MessageService);
     }
+    // componentDidMount() {
+    //     axios.get('http://localhost:3040/messages')
+    //     .then(res => {
+    //         console.log(res.data);
+    //         // const data = res.data;
+    //         // this.setState({data});
+    //     })
+    // }
     onToggleLiked(id) {
         this.setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
@@ -44,7 +64,7 @@ export default class MessageList extends Component {
             const nowData = new Date().getHours();
             const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
             const index = data.findIndex(elem => elem.id === id);
-            const old = data[index]; 
+            const old = data[index];
             const newLabel = prompt("Edit");
             const newItem = {...old, text: newLabel, editedAt: nowDataTrue};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
@@ -90,9 +110,10 @@ export default class MessageList extends Component {
     render() {
     const {data} = this.state;
     const messages = data.length;
-    const lastMessage = data[messages - 1].createdAt.slice(11, -8);
+    const lastMessage = data.length ? data[messages - 1].createdAt.slice(11, -8) :'';
     var participantsArr = [];
     var participants;
+    // console.log(data);
     const elements = data.map((item, index) => {
             participantsArr[index] = item.userId;
             participants = new Set(participantsArr);
@@ -114,12 +135,12 @@ export default class MessageList extends Component {
         if(item.own){
             return(
                 <div key={item.id}>
-                    <p className={TodayYesterday ? "whenTrue" : "whenFalse"}>
-                        <hr className="WhenTrueHR" color="black" noshade/>
+                    <div className={TodayYesterday ? "whenTrue" : "whenFalse"}>
+                        <hr className="WhenTrueHR" color="black"/>
                         <div className="WhenTrueDivText">
                             <p className="WhenTrueText">Yesterday</p>
                         </div>
-                    </p>
+                    </div>
                 <div className="TitleContainerFlexCopied2">
                     <div className="btns-style">
                             <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
@@ -142,9 +163,9 @@ export default class MessageList extends Component {
         else{
             return  (
                 <div key={item.id}>
-                    <p className={TodayYesterday ? "whenTrue" : "whenFalse"}>
+                    <div className={TodayYesterday ? "whenTrue" : "whenFalse"}>
                         <hr className="WhenTrueHR" color="black"/>
-                    </p>
+                    </div>
                     <div className="TitleContainerFlex">
                         <div className="TitleMessages" id="message" onClick={() => this.onToggleLiked(item.id)}>
                                 <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
@@ -166,9 +187,9 @@ export default class MessageList extends Component {
                         messages={messages}
                         lastMessage={lastMessage}
                         />
-                <p class="title">
+                <div className="title">
                     {elements}
-                </p>
+                </div>
                 <MessageInput className="Mymessage" onAdd={this.onAdd}/>
             </>
         )   

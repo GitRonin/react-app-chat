@@ -1,3 +1,22 @@
+const axios = require('axios');
+
+axios.get('http://localhost:3040/messages')
+    .then(function(response) {
+        console.log(response);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+
+// import * as axios from 'axios';
+
+// export const getUsers = () => {
+//     return axios.get('http://localhost:3040/messages')
+//     .then(response => {
+//         return response.data;
+//     });
+// }
+
 // export default function messageService() {
 //   // const a = this;
 //   const request = new XMLHttpRequest();
