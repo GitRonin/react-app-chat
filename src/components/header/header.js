@@ -1,9 +1,7 @@
 import React from 'react';
-// import MessageList from '../message-list';
 import './header.css';
 import styled from 'styled-components';
 
-// console.log(MessageList.test());
 const Title = styled.div`
     border: 1px solid;
     margin 0px 0px 10px 0px;
