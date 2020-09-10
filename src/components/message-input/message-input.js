@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './message-input.css';
 
-export default  class MessageInput extends Component {
+export default class MessageInput extends Component {
     constructor(props) {
         super(props);
         this.state = {

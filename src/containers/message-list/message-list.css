@@ -133,6 +133,9 @@
 .btns-style{
   display: block;
 }
+.btn-style-none{
+  display: none;
+}
 .btns-style-btn{
   display: flex;
 }

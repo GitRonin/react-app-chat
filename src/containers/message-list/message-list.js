@@ -4,18 +4,26 @@ import Header from '../../components/header/header';
 import './message-list.css';
 import axios from 'axios';
 import {api} from '../../message-service.js';
+import Message from '../../components/message/message';
+// import ScrollToBottom from 'react-scroll-to-bottom';
+
+// const ROOT_CSS = css({
+//     height: 600,
+//     width: 400
+//   });
 
 export default function MessageList() {
-    let id = 0;
     var TodayYesterday = false;
     var participantsArr = [], participants;
     var lm;
     const nowDataFull = new Date().toISOString();
     const nowData = new Date().getHours();
     const [state, setState] = useState({data: []});
+    const [userMesId, setuserMesId] = useState(0);
     const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
 
     useEffect(() => {
+        console.log('some');
             axios.get(api.messages)
             .then((response) => {
                 setState({data: response.data});
@@ -61,8 +69,8 @@ export default function MessageList() {
     }
     const onAdd = (labelText) => {
         const newItem = {
-            id: id++,
-            userId: "",
+            id: userMesId,
+            userId: "0r354041-94v0-22r0-9r1v-9g2s797g5vr5",
             avatar: "https://ru.botlibre.com/images/avatar.png",
             user: "You",
             text: labelText,
@@ -70,6 +78,7 @@ export default function MessageList() {
             editedAt: "",
             own: true
         };
+        setuserMesId(userMesId+1);
         setState(({data}) => {
             const newArr = [...data, newItem];
             return {
@@ -102,66 +111,28 @@ export default function MessageList() {
             lastMessage();
             users(index, item.userId);
             someTime(index);
-        if(item.own){
-            return(
-                <div key={item.id}>
-                    <div className={TodayYesterday ? "whenTrue" : "whenFalse"}>
-                        <hr className="WhenTrueHR" color="black"/>
-                        <div className="WhenTrueDivText">
-                            <p className="WhenTrueText">Yesterday</p>
-                        </div>
-                    </div>
-                    <div className="TitleContainerFlexCopied2">
-                        <div className="btns-style">
-                                <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
-                            <div className="btns-style-btn">
-                                <p className="btn-edit" onClick={() => onEdit(item.id)}/>
-                                <p className="btn-delete" onClick={() => onDelete(item.id)}/>
-                            </div>
-                        </div>
-                        <div className="TitleMessages" id="message">
-                            <img className="MessageAvatar" src={item.avatar} alt="Bot Avatar"/>
-                            <p className="MessageName">{item.user}</p>
-                            <p className="MessageText" id="valueText">{item.text}</p>
-                            <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-        else{
-            return  (
-                <div key={item.id}>
-                    <div className={TodayYesterday ? "whenTrue" : "whenFalse"}>
-                        <hr className="WhenTrueHR" color="black"/>
-                        <div className="WhenTrueDivText">
-                            <p className="WhenTrueText">Yesterday</p>
-                        </div>
-                    </div>
-                    <div className="TitleContainerFlex">
-                        <div className="TitleMessages" id="message" onClick={() => onToggleLiked(item.id)}>
-                            <img className="MessageAvatar" src={item.avatar} alt="Avatar"/>
-                            <p className="MessageName">{item.user}</p>
-                            <p className="MessageText" id="valueText">{item.text}</p>
-                            <p className="MessageData">{item.createdAt.slice(11, -8)}</p>
-                        </div>
-                        <p className={item.editedAt === "" ? "MessageWasEditedNone" : "MessageWasEdited"}>(edited)</p>
-                        <p className={item.like ? 'heart' : ''}></p>
-                    </div>
-                </div>
-            )
-        }
+                return(
+                    <Message
+                    item={item}
+                    TodayYesterday={TodayYesterday}
+                    onDelete={onDelete}
+                    onEdit={onEdit}
+                    onToggleLiked={onToggleLiked}
+                    />
+                )
     });
         return(
             <>
                 <Header 
-                        participants={participants}
-                        messages={state.data.length}
-                        lastMessage={lm}
-                        />
-                <div className="title">
-                    {elements}
-                </div>
+                    participants={participants}
+                    messages={state.data.length}
+                    lastMessage={lm}
+                    />
+                {/* <div className={ScrollToBottom}> */}
+                    <div className="title">
+                        {elements}
+                    </div>
+                {/* </div> */}
                 <MessageInput 
                     className="Mymessage" 
                     onAdd={onAdd}/>
