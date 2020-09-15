@@ -1,38 +1,30 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import './message-input.css';
 
-export default class MessageInput extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            text: ''
-        };
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onValueChange = this.onValueChange.bind(this);
-    }
-    onValueChange(e) {
-        this.setState({
+export default function MessageInput(props) {
+    const [state, setState] = useState({text: ''});
+    const onValueChange = (e) => {
+        setState({
             text: e.target.value
         });
     }
-    onSubmit(e) {
+    const onSubmit = (e) => {
         e.preventDefault();
-        this.props.onAdd(this.state.text);
-        this.setState({
+        props.onAdd(state.text);
+        setState({
             text: ''
         });
     }
-    render() {
         return (
             <form 
             className="bottom-panel d-flex"
-            onSubmit={this.onSubmit}>
+            onSubmit={onSubmit}>
                 <input
                     type="text"
                     placeholder="Message"
                     className="form-control new-post-label"
-                    onChange={this.onValueChange}
-                    value={this.state.text}/>
+                    onChange={onValueChange}
+                    value={state.text}/>
                 <button
                     type="submit"
                     className="btn- btn-outline-secondary">
@@ -40,5 +32,4 @@ export default class MessageInput extends Component {
                 </button>
             </form> 
         )
-    }
 }

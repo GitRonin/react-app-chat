@@ -5,12 +5,6 @@ import './message-list.css';
 import axios from 'axios';
 import {api} from '../../message-service.js';
 import Message from '../../components/message/message';
-// import ScrollToBottom from 'react-scroll-to-bottom';
-
-// const ROOT_CSS = css({
-//     height: 600,
-//     width: 400
-//   });
 
 export default function MessageList() {
     var TodayYesterday = false;
@@ -23,7 +17,6 @@ export default function MessageList() {
     const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
 
     useEffect(() => {
-        console.log('some');
             axios.get(api.messages)
             .then((response) => {
                 setState({data: response.data});
@@ -128,11 +121,9 @@ export default function MessageList() {
                     messages={state.data.length}
                     lastMessage={lm}
                     />
-                {/* <div className={ScrollToBottom}> */}
                     <div className="title">
                         {elements}
                     </div>
-                {/* </div> */}
                 <MessageInput 
                     className="Mymessage" 
                     onAdd={onAdd}/>

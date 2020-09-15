@@ -1,3 +1,8 @@
+.AppBlock{
+  margin: 0 auto;
+  max-width: 800px;
+}
+
 .logoText{
   margin: 20px 0px 0px 0px;
 }
