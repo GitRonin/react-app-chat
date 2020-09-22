@@ -23,9 +23,9 @@ const Header = ({participants, messages, lastMessage}) => {
     return (
         <Title>
             <h1>My Chat</h1>
-            <h2>{participants} participants</h2>
-            <h2> {messages} messages</h2>
-            <h2>Last message at {lastMessage}</h2>
+            <h2>{participants ? participants : "0"} participants</h2>
+            <h2> {messages ? messages : "0"} messages</h2>
+            <h2>Last message at {lastMessage ? lastMessage : "error"}</h2>
         </Title>
     )
 }

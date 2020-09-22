@@ -3,8 +3,9 @@ import MessageInput from '../../components/message-input/message-input';
 import Header from '../../components/header/header';
 import './message-list.css';
 import axios from 'axios';
-import {api} from '../../message-service.js';
+import {api} from '../../service/message-service.js';
 import Message from '../../components/message/message';
+import {db} from '../../service/firebase.js';
 
 export default function MessageList() {
     var TodayYesterday = false;
@@ -12,10 +13,20 @@ export default function MessageList() {
     var lm;
     const nowDataFull = new Date().toISOString();
     const nowData = new Date().getHours();
+    const [stateDb, setStateDb] = useState({notes: []});
     const [state, setState] = useState({data: []});
     const [userMesId, setuserMesId] = useState(0);
     const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
 
+    useEffect(() => {
+        db.ref('all_notes/0001').on('value', snapshot => {
+            let allNotes = [];
+            snapshot.forEach(snap => {
+                allNotes.push(snap.val());
+            });
+            setStateDb({notes: allNotes});
+        });
+    }, [])
     useEffect(() => {
             axios.get(api.messages)
             .then((response) => {
@@ -114,6 +125,13 @@ export default function MessageList() {
                     />
                 )
     });
+    const test123 = stateDb.notes.map(note => {
+        return(
+            <div key={note.note_id}>
+                {note.content}
+            </div>
+        )
+    })
         return(
             <>
                 <Header 
@@ -122,6 +140,7 @@ export default function MessageList() {
                     lastMessage={lm}
                     />
                     <div className="title">
+                        {test123}
                         {elements}
                     </div>
                 <MessageInput 
