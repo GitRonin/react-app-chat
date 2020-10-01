@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import MessageInput from '../../components/message-input/message-input';
 import Header from '../../components/header/header';
-import './message-list.css';
 import axios from 'axios';
 import {api} from '../../service/message-service.js';
+import './message-list.css';
 import Message from '../../components/message/message';
 import {db} from '../../service/firebase.js';
 
@@ -11,37 +11,28 @@ export default function MessageList() {
     var TodayYesterday = false;
     var participantsArr = [], participants;
     var lm;
+    // let newMessageRef = db.ref(`messages/`).push({});
     const nowDataFull = new Date().toISOString();
     const nowData = new Date().getHours();
-    const [stateDb, setStateDb] = useState({notes: []});
     const [state, setState] = useState({data: []});
-    const [userMesId, setuserMesId] = useState(0);
+    const [userMesId, setUserMesId] = useState(0);
     const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
-
     useEffect(() => {
-        db.ref('all_notes/0001').on('value', snapshot => {
-            let allNotes = [];
-            snapshot.forEach(snap => {
-                allNotes.push(snap.val());
-            });
-            setStateDb({notes: allNotes});
-        });
-    }, [])
-    useEffect(() => {
-            axios.get(api.messages)
-            .then((response) => {
-                setState({data: response.data});
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        axios.get(api.messages)
+        .then((response) => {
+                db.ref(`messages/`).set(response.data);
+                db.ref(`messages/`).on('value', snap => {
+                    setState({data: snap.val()})
+                });
+        })
+        .catch( error => console.log(error) );
     }, []);
-    
     const onToggleLiked = (id) => {
         setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index]; 
             const newItem = {...old, like: !old.like};
+            // data.splice(index, 0, newItem)
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
@@ -55,25 +46,21 @@ export default function MessageList() {
             const newLabel = prompt("Edit");
             const newItem = {...old, text: newLabel, editedAt: nowDataTrue};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+            // db.ref(`messages/${index}`).update({labelText: newLabel});
             return {
                 data: newArr
             }
         });
     }
     const onDelete = (id) => {
-        setState(({data}) => {
-            const index = data.findIndex(elem => elem.id === id);
-            const before = data.slice(0, index);
-            const after = data.slice(index + 1);
-            const newArr = [...before, ...after];
-            return {
-                data: newArr
-            }
+        setState({
+            data: state.data.filter(elem => elem.id !== id)
         });
+        db.ref(`messages/`).set(state.data.filter(elem => elem.id !== id));
     }
     const onAdd = (labelText) => {
         const newItem = {
-            id: userMesId,
+            id: `${userMesId}`,
             userId: "0r354041-94v0-22r0-9r1v-9g2s797g5vr5",
             avatar: "https://ru.botlibre.com/images/avatar.png",
             user: "You",
@@ -82,21 +69,18 @@ export default function MessageList() {
             editedAt: "",
             own: true
         };
-        setuserMesId(userMesId+1);
-        setState(({data}) => {
-            const newArr = [...data, newItem];
-            return {
-                data: newArr
-            }
-        });
+        setUserMesId(userMesId + 1);
+        setState({data: [...state.data, newItem]});
+        db.ref(`messages/`).set();
     }
     const someTime = (index) => {
         if(state.data[index - 1] !== undefined){
-            const nowYear = state.data[index].createdAt.slice(0, -20);
-            const nowMouth = state.data[index].createdAt.slice(5, -17);
-            const nowDay = state.data[index].createdAt.slice(8, -14);
+            const itemCreatedAt = state.data[index].createdAt
+            const nowYear = itemCreatedAt.slice(0, -20);
+            const nowMouth = itemCreatedAt.slice(5, -17);
+            const nowDay = itemCreatedAt.slice(8, -14);
             if(nowYear === state.data[index - 1].createdAt.slice(0, -20) && nowMouth === state.data[index - 1].createdAt.slice(5, -17) && nowDay === state.data[index - 1].createdAt.slice(8, -14)) {
-                const nowHours = Number(state.data[index].createdAt.slice(11, -11));
+                const nowHours = Number(itemCreatedAt.slice(11, -11));
                 const previousHours = Number(state.data[index - 1].createdAt.slice(11, -11));
                 nowHours < previousHours ? TodayYesterday = true : TodayYesterday = false;
             }
@@ -117,6 +101,7 @@ export default function MessageList() {
             someTime(index);
                 return(
                     <Message
+                    key={item.id}
                     item={item}
                     TodayYesterday={TodayYesterday}
                     onDelete={onDelete}
@@ -125,13 +110,6 @@ export default function MessageList() {
                     />
                 )
     });
-    const test123 = stateDb.notes.map(note => {
-        return(
-            <div key={note.note_id}>
-                {note.content}
-            </div>
-        )
-    })
         return(
             <>
                 <Header 
@@ -140,7 +118,6 @@ export default function MessageList() {
                     lastMessage={lm}
                     />
                     <div className="title">
-                        {test123}
                         {elements}
                     </div>
                 <MessageInput 
