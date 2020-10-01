@@ -11,7 +11,6 @@ export default function MessageList() {
     var TodayYesterday = false;
     var participantsArr = [], participants;
     var lm;
-    // let newMessageRef = db.ref(`messages/`).push({});
     const nowDataFull = new Date().toISOString();
     const nowData = new Date().getHours();
     const [state, setState] = useState({data: []});
@@ -27,12 +26,14 @@ export default function MessageList() {
         })
         .catch( error => console.log(error) );
     }, []);
+    useEffect(() => {
+        db.ref(`messages/`).set(state.data);
+      }, [state.data]);
     const onToggleLiked = (id) => {
         setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
-            const old = data[index]; 
+            const old = data[index];
             const newItem = {...old, like: !old.like};
-            // data.splice(index, 0, newItem)
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
@@ -46,7 +47,6 @@ export default function MessageList() {
             const newLabel = prompt("Edit");
             const newItem = {...old, text: newLabel, editedAt: nowDataTrue};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            // db.ref(`messages/${index}`).update({labelText: newLabel});
             return {
                 data: newArr
             }
@@ -56,7 +56,6 @@ export default function MessageList() {
         setState({
             data: state.data.filter(elem => elem.id !== id)
         });
-        db.ref(`messages/`).set(state.data.filter(elem => elem.id !== id));
     }
     const onAdd = (labelText) => {
         const newItem = {
@@ -71,7 +70,6 @@ export default function MessageList() {
         };
         setUserMesId(userMesId + 1);
         setState({data: [...state.data, newItem]});
-        db.ref(`messages/`).set();
     }
     const someTime = (index) => {
         if(state.data[index - 1] !== undefined){
