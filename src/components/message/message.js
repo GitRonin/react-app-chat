@@ -1,9 +1,9 @@
 import React from 'react';
 export default function AnyWay(props) {
-    const {item, TodayYesterday} = props;
+    const {item, timeTable} = props;
         return(
             <div key={item.id}>
-                <div className={TodayYesterday ? "whenTrue" : "whenFalse"}>
+                <div className={timeTable ? "whenTrue" : "whenFalse"}>
                     <hr className="WhenTrueHR" color="black"/>
                     <div className="WhenTrueDivText">
                         <p className="WhenTrueText">Yesterday</p>

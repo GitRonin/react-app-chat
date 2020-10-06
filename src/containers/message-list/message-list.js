@@ -5,29 +5,30 @@ import axios from 'axios';
 import {api} from '../../service/message-service.js';
 import './message-list.css';
 import Message from '../../components/message/message';
-import {db} from '../../service/firebase.js';
+import {datebaseMessages} from '../../service/firebase.js';
 
 export default function MessageList() {
-    var TodayYesterday = false;
-    var participantsArr = [], participants;
-    var lm;
-    const nowDataFull = new Date().toISOString();
-    const nowData = new Date().getHours();
-    const [state, setState] = useState({data: []});
+    var timeTable = false;
+    // const participantsArr = [];
+    // var participantsArr = [], participants;
+    const date = new Date();
+    const isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
+    const [state, setState] = useState({data: []}); 
+    // const [timeTable, setTimeTable] = useState(false);
+    // const [NumbersOfParticipants, setNumbersOfParticipants] = useState(0);
     const [userMesId, setUserMesId] = useState(0);
-    const nowDataTrue = nowDataFull.slice(0, -13) + nowData + nowDataFull.slice(13);
     useEffect(() => {
         axios.get(api.messages)
         .then((response) => {
-                db.ref(`messages/`).set(response.data);
-                db.ref(`messages/`).on('value', snap => {
+            datebaseMessages.ref(`messages/`).set(response.data);
+            datebaseMessages.ref(`messages/`).on('value', snap => {
                     setState({data: snap.val()})
                 });
         })
         .catch( error => console.log(error) );
     }, []);
     useEffect(() => {
-        db.ref(`messages/`).set(state.data);
+        datebaseMessages.ref(`messages/`).set(state.data);
       }, [state.data]);
     const onToggleLiked = (id) => {
         setState(({data}) => {
@@ -45,7 +46,7 @@ export default function MessageList() {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index];
             const newLabel = prompt("Edit");
-            const newItem = {...old, text: newLabel, editedAt: nowDataTrue};
+            const newItem = {...old, text: newLabel, editedAt: isoDate};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             return {
                 data: newArr
@@ -64,44 +65,38 @@ export default function MessageList() {
             avatar: "https://ru.botlibre.com/images/avatar.png",
             user: "You",
             text: labelText,
-            createdAt: nowDataTrue,
+            createdAt: isoDate,
             editedAt: "",
             own: true
         };
         setUserMesId(userMesId + 1);
         setState({data: [...state.data, newItem]});
     }
-    const someTime = (index) => {
+    const timeTableFunction = (index) => {
         if(state.data[index - 1] !== undefined){
-            const itemCreatedAt = state.data[index].createdAt
-            const nowYear = itemCreatedAt.slice(0, -20);
-            const nowMouth = itemCreatedAt.slice(5, -17);
-            const nowDay = itemCreatedAt.slice(8, -14);
-            if(nowYear === state.data[index - 1].createdAt.slice(0, -20) && nowMouth === state.data[index - 1].createdAt.slice(5, -17) && nowDay === state.data[index - 1].createdAt.slice(8, -14)) {
-                const nowHours = Number(itemCreatedAt.slice(11, -11));
-                const previousHours = Number(state.data[index - 1].createdAt.slice(11, -11));
-                nowHours < previousHours ? TodayYesterday = true : TodayYesterday = false;
+            const IndexCreatedAtNow = new Date(state.data[index].createdAt);
+            const IndexCreatedAtPrevious = new Date(state.data[index - 1].createdAt);
+            if(IndexCreatedAtPrevious.getFullYear() === IndexCreatedAtNow.getFullYear() && IndexCreatedAtPrevious.getMonth() === IndexCreatedAtNow.getMonth() && IndexCreatedAtPrevious.getDate() === IndexCreatedAtNow.getDate()) {
+                IndexCreatedAtNow.getHours() < IndexCreatedAtPrevious.getHours() ? timeTable = true : timeTable = false;
             }
-            else{TodayYesterday = true}
+            else{timeTable = true}
         }
     }
-    const users = (index, userId) => {
-        participantsArr[index] = userId;
-        participants = new Set(participantsArr);
-        participants = participants.size;
-    }
-    const lastMessage = () => {
-        lm = state.data.length ? state.data[state.data.length - 1].createdAt.slice(11, -8) : '';
+    const [NumbersOfParticipants, setNumbersOfParticipants] = useState(0);
+    const NumbersOfUsers = (index, userId) => {
+        // const participantsArr = [];
+        // participantsArr[index] = userId;
+        // new Set(participantsArr).size
+        setNumbersOfParticipants(NumbersOfParticipants + 4);
     }
     const elements = state.data.map((item, index) => {
-            lastMessage();
-            users(index, item.userId);
-            someTime(index);
+        NumbersOfUsers(index, item.userId);
+        timeTableFunction(index);
                 return(
                     <Message
                     key={item.id}
                     item={item}
-                    TodayYesterday={TodayYesterday}
+                    timeTable={timeTable}
                     onDelete={onDelete}
                     onEdit={onEdit}
                     onToggleLiked={onToggleLiked}
@@ -111,9 +106,9 @@ export default function MessageList() {
         return(
             <>
                 <Header 
-                    participants={participants}
+                    participants={4}
                     messages={state.data.length}
-                    lastMessage={lm}
+                    lastMessage={state.data.length ? state.data[state.data.length - 1].createdAt.slice(11, -8) : ''}
                     />
                     <div className="title">
                         {elements}

@@ -6,7 +6,7 @@ const config = {
 };
 firebase.initializeApp(config);
 export const auth = firebase.auth;
-export const db = firebase.database();
+export const datebaseMessages = firebase.database();
 
 // var firebaseConfig = {
 //     apiKey: "AIzaSyCJG_Q1yOENZFjmyczO60Y0AeUMWCfmg8I",
