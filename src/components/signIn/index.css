@@ -1,0 +1,45 @@
+.SignInText{
+    text-align: center;
+}
+.SignInWindow{
+    display: flex;
+    flex-direction: column;
+    border: solid 2px #C9DCDA;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+.SignInForm{
+    display: flex;
+    flex-direction: column;
+}
+.labelText{
+    font-size: 18px;
+    padding: 3px;
+}
+.inputData{
+    border: none;
+    margin-bottom: 15px;
+}
+.btnSignIn{
+    border-radius: 3px;
+    border: solid 2px #AECFBA;
+    padding: 8px;
+    color: white;
+    background-color: #68D290;
+}
+.btnSignInWithGoogle{
+    border-radius: 3px;
+    border: solid 2px #AECFBA;
+    padding: 8px;
+    color: white;
+    background-color: #EF6865;
+}
+.SignTextOr{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.NewAccount{
+    text-align: center;
+}

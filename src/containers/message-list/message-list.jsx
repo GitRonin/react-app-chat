@@ -14,8 +14,8 @@ export default function MessageList() {
     const [NumbersOfParticipants, setNumbersOfParticipants] = useState(0);
     const [userMesId, setUserMesId] = useState(0);
     
-    useEffect(() => {
-            datebaseMessages.ref(`messages/`).on('value', snap => {
+    useEffect(_ => {
+            datebaseMessages.ref(`messages`).on('value', snap => {
                     setState({data: snap.val()})
                     NumbersOfUsers(snap);
                     // timeTableFunction(snap);
@@ -38,9 +38,10 @@ export default function MessageList() {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index];
             const newLabel = prompt("Edit");
+            console.log(isoDate);
             const newItem = {...old, text: newLabel, editedAt: isoDate};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            datebaseMessages.ref(`messages/${index}`).update({text: newLabel});
+            datebaseMessages.ref(`messages/${index}`).update({text: newLabel, editedAt: isoDate});
             return {
                 data: newArr
             }
@@ -76,15 +77,16 @@ export default function MessageList() {
         setNumbersOfParticipants(numberOfUsers);
     }
     // const timeTableFunction = (snap) => {
-    //     console.log(state.data);
-    //     if(state.data[index - 1] !== undefined){
-    //         const IndexCreatedAtNow = new Date(state.data[index].createdAt);
-    //         const IndexCreatedAtPrevious = new Date(state.data[index - 1].createdAt);
-    //         if(IndexCreatedAtPrevious.getFullYear() === IndexCreatedAtNow.getFullYear() && IndexCreatedAtPrevious.getMonth() === IndexCreatedAtNow.getMonth() && IndexCreatedAtPrevious.getDate() === IndexCreatedAtNow.getDate()) {
-    //             IndexCreatedAtNow.getHours() < IndexCreatedAtPrevious.getHours() ? setTimeTable(true) : setTimeTable(false);
+    //     const userIndex = snap.val().map((item, index) => index);
+    //         console.log(index);
+    //         if(snap.val()[index - 1] !== undefined){
+    //             const IndexCreatedAtNow = new Date(snap.val()[index].createdAt);
+    //             const IndexCreatedAtPrevious = new Date(snap.val()[index - 1].createdAt);
+    //             if(IndexCreatedAtPrevious.getFullYear() === IndexCreatedAtNow.getFullYear() && IndexCreatedAtPrevious.getMonth() === IndexCreatedAtNow.getMonth() && IndexCreatedAtPrevious.getDate() === IndexCreatedAtNow.getDate()) {
+    //                 IndexCreatedAtNow.getHours() < IndexCreatedAtPrevious.getHours() ? setTimeTable(true) : setTimeTable(false);
+    //             }
+    //             else{setTimeTable(true)}
     //         }
-    //         else{setTimeTable(true)}
-    //     }
     // }
     const elements = state.data.map((item) => {
                 return(

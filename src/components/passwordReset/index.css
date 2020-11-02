@@ -1,0 +1,23 @@
+.Generalltext{
+    text-align: center;
+}
+.PasswordResetBody{
+        display: flex;
+        flex-direction: column;
+        border: solid 2px #C9DCDA;
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+}
+input{
+    border: none;
+    margin-left: 10px;
+}
+.btnsSendLink{
+    border-radius: 3px;
+    border: solid 2px #AECFBA;
+    padding: 8px;
+    color: white;
+    background-color: #68D290;
+}
