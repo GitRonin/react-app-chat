@@ -13,7 +13,7 @@ export default function SignUp() {
         const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
             event.preventDefault();
             try{
-                const {user} = await auth.createUserWithEmailAndPassword("sveten_s@mail.ru", "123456").then(_ => console.log('true')).catch(_ => console.log("ERRRRROOOOR"));
+                const {user} = await auth.createUserWithEmailAndPassword("mixggua@gmail.com", "123456").then(_ => console.log('true')).catch(_ => console.log("ERRRRROOOOR"));
                 console.log("generateUserDocument");
                 generateUserDocument(user, "GitRonin");
             }
