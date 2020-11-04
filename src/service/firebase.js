@@ -18,19 +18,20 @@ export const signInWithGoogle = _ => {
   auth.signInWithPopup(provider);
 };
 export const generateUserDocument = async (user, additionalData) => {
+  console.log("!user");
   if (!user) return;
 
-  const userRef = datebaseMessages.ref(`users/1`);
+  const userRef = datebaseMessages.ref(`users/2`);
   const snapshot = await userRef.get();
-  console.log(snapshot);
+  // console.log(snapshot);
 
 //   .on('value', snap => {
 //     setState({data: snap.val()})
 //     NumbersOfUsers(snap);
 //     // timeTableFunction(snap);
 // });
-console.log("snaphot");
-console.log(snapshot.exists);
+// console.log("snaphot");
+// console.log(snapshot.exists);
   if (!snapshot.exists) {
     const { email, displayName, photoURL } = user;
     try {

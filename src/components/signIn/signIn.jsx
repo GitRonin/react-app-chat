@@ -15,8 +15,8 @@ export default function SignIn() {
         };
         const onChangeHandler = event => {
             const {name, value} = event.currentTarget;
-            if(name === "useEmail") setEmail(value);
-            if(name === "usePassword") setPassword(value);
+            if(name === "userEmail") setEmail(value);
+            if(name === "userPassword") setPassword(value);
         };
     return(
         <div>

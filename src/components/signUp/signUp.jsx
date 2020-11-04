@@ -2,18 +2,20 @@ import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import {auth, signInWithGoogle, generateUserDocument} from "../../service/firebase";
 import './index.css';
+import firebase from "firebase";
 
 export default function SignUp() {
-        const [email, setEmail] = useState(String);
-        const [password, setPassword] = useState(String);
-        const [displayName, setDisplayName] = useState(String);
+    // console.log(firebase.auth().createUserWithEmailAndPassword("sveten_s@mail.ru", "123456"));
+        const [email, setEmail] = useState('');
+        const [password, setPassword] = useState('');
+        const [displayName, setDisplayName] = useState('');
         const [error, setError] = useState(null);
         const createUserWithEmailAndPasswordHandler = async (event, email, password) => {
             event.preventDefault();
             try{
-                const {user} = await auth.createUserWithEmailAndPassword(email, password).catch(_ => console.log("ERRRRROOOOR"));
-                generateUserDocument(user, {displayName});
+                const {user} = await auth.createUserWithEmailAndPassword("sveten_s@mail.ru", "123456").then(_ => console.log('true')).catch(_ => console.log("ERRRRROOOOR"));
                 console.log("generateUserDocument");
+                generateUserDocument(user, "GitRonin");
             }
             catch(error){
                 setError('Error Singning up with email and password');
@@ -24,8 +26,8 @@ export default function SignUp() {
         };
         const onChangeHandler = event => {
             const {name, value} = event.currentTarget;
-            if(name === "useEmail") setEmail(value);
-            if(name === "usePassword") setPassword(value);
+            if(name === "userEmail") setEmail(value);
+            if(name === "userPassword") setPassword(value);
             if(name === "displayName") setDisplayName(value);
         };
     return(
@@ -42,7 +44,7 @@ export default function SignUp() {
                         name="displayName"
                         value={displayName}
                         placeholder="E.g: Farug"
-                        id="userEmail"
+                        id="displayName"
                         onChange={event => onChangeHandler(event)}
                     />
                     <label htmlFor="userEmail" className="labelText">

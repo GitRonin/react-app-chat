@@ -37,7 +37,7 @@ export default function App() {
               <ProfilePage/>
             :
               <Router>
-                <MessageList/>
+                {/* <MessageList/> */}
                 <SignUp path="signUp"/>
                 <SignIn path="/"/>
                 <PasswordReset path="passwordReset"/>
