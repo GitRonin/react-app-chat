@@ -1,54 +1,51 @@
-import React, {useState} from 'react';
-import {Link} from "react-router-dom";
-import {auth, signInWithGoogle} from '../../service/firebase';
+import React, {useCallback, useContext} from 'react';
+import {withRouter, Redirect, Link} from "react-router-dom";
+import {auth, signInWithGoogle} from '../../service/firebase.js';
+import {AuthContext} from '../Auth.js';
 import './index.css';
-export default function SignIn() {
-        const [email, setEmail] = useState('');
-        const [password, setPassword] = useState('');
-        const [error, setError] = useState(null);
-        const signInWithEmailAndPasswordHandler = (event, email, password) => {
+
+const SignIn = ({ history }) => {
+    const handleSignIn = useCallback(
+        async event => {
             event.preventDefault();
-            auth.signInWithEmailAndPassword(email, password).catch(error => {
-                setError("Error singning in with password and email!");
-                console.error("Error singning in with password and email!", error);
-            });
-        };
-        const onChangeHandler = event => {
-            const {name, value} = event.currentTarget;
-            if(name === "userEmail") setEmail(value);
-            if(name === "userPassword") setPassword(value);
-        };
+            const {email, password} = event.target.elements;
+            try{
+                await auth
+                .signInWithEmailAndPassword(email.value, password.value);
+                history.push('/');
+            } catch(error) {
+                alert(error);
+            }
+        }, [history]
+    );
+
+    const {currentUser} = useContext(AuthContext);
+    if(currentUser) return <Redirect to="/" />
+
     return(
         <div>
             <h1 className="SignInText">Sign In</h1>
             <div className="SignInWindow">
-                {error !== null && <div className="">{error}</div>}
-                <form className="SignInForm">
-                    <label htmlFor="userEmail" className="labelText">
+                <form className="SignInForm" onSubmit={handleSignIn}>
+                    <label className="labelText">
                         Email:
                     </label>
                     <input
                         type="email"
-                        name="userEmail"
+                        name="email"
                         className="inputData"
-                        value={email}
                         placeholder="E.g: faruq123@gmail.com"
-                        id="userEmail"
-                        onChange={event => onChangeHandler(event)}
                     />
-                    <label htmlFor="userPassword" className="labelText">
+                    <label className="labelText">
                         Password:    
                     </label>
                     <input
                         type="password"
-                        name="inputData"
+                        name="password"
                         className="inputData"
-                        value={password}
                         placeholder="Your Password"
-                        id="userPassword"
-                        onChange = {event => onChangeHandler(event)}
                     />
-                    <button className="btn btnSignIn" onClick={event => {signInWithEmailAndPasswordHandler(event, email, password)}}>
+                    <button type="submit" className="btn btnSignIn">
                         Sign in
                     </button>
                 </form>
@@ -72,3 +69,5 @@ export default function SignIn() {
         </div>
     );
 };
+
+export default withRouter(SignIn);

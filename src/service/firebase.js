@@ -17,31 +17,22 @@ const provider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogle = _ => {
   auth.signInWithPopup(provider);
 };
-export const generateUserDocument = async (user, additionalData) => {
-  console.log("!user");
+export const generateUserDocument = async (displayName, user) => {
   if (!user) return;
 
-  const userRef = datebaseMessages.ref(`users/2`);
-  const snapshot = await userRef.get();
-  // console.log(snapshot);
+  const snapshot = await datebaseMessages.ref(`user/${user.uid}`).on('value', snap => snap.val());
 
-//   .on('value', snap => {
-//     setState({data: snap.val()})
-//     NumbersOfUsers(snap);
-//     // timeTableFunction(snap);
-// });
-// console.log("snaphot");
-// console.log(snapshot.exists);
   if (!snapshot.exists) {
-    const { email, displayName, photoURL } = user;
+    const {email, uid } = user;
     try {
-      await userRef.set({
-        displayName,
-        email,
-        photoURL,
-        ...additionalData
-      });
-    } catch (error) {
+    await datebaseMessages.ref(`users/${uid}`).set({
+      user: displayName,
+      email: email,
+      avatar: "https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png",
+      userId: uid
+    });
+    } 
+    catch (error) {
       console.error("Error creating user document", error);
     }
   }
@@ -50,12 +41,9 @@ export const generateUserDocument = async (user, additionalData) => {
 const getUserDocument = async uid => {
   if (!uid) return null;
   try {
-    const userDocument = await datebaseMessages.ref(`users/${uid}`).get();
+    const userDocument = await datebaseMessages.ref(`users/${uid}`).on('value', snap => snap.val());
 
-    return {
-      uid,
-      ...userDocument.data()
-    };
+    return { uid, ...userDocument };
   } catch (error) {
     console.error("Error fetching user", error);
   }

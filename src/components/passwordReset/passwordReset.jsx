@@ -63,7 +63,7 @@ export default function PasswordReset() {
           </button>
         </form>
         <Link
-         to ="/"
+         to ="/signIn"
           className=""
         >
           &larr; back to sign in page

@@ -4,7 +4,9 @@ import Header from '../../components/header/header';
 import './message-list.css';
 import Message from '../../components/message/message';
 import {datebaseMessages} from '../../service/firebase.js';
+import {auth} from '../../service/firebase.js';
 
+export function onAdd(){}
 export default function MessageList() {
     // var timeTable = false;
     const date = new Date();
@@ -21,7 +23,7 @@ export default function MessageList() {
                     // timeTableFunction(snap);
                 });
     }, []);
-    const onToggleLiked = (id) => {
+    const onToggleLiked = id => {
         setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index];
@@ -33,12 +35,11 @@ export default function MessageList() {
             }
         });
     }
-    const onEdit = (id) => {
+    const onEdit = id => {
         setState(({data}) => {
             const index = data.findIndex(elem => elem.id === id);
             const old = data[index];
             const newLabel = prompt("Edit");
-            console.log(isoDate);
             const newItem = {...old, text: newLabel, editedAt: isoDate};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
             datebaseMessages.ref(`messages/${index}`).update({text: newLabel, editedAt: isoDate});
@@ -47,7 +48,7 @@ export default function MessageList() {
             }
         });
     }
-    const onDelete = (id) => {
+    const onDelete = id => {
         setState(_ => {
             const newArr = state.data.filter(elem => elem.id !== id);
             datebaseMessages.ref(`messages/`).set({...newArr});
@@ -56,12 +57,12 @@ export default function MessageList() {
             }
         });
     }
-    const onAdd = (labelText) => {
+    const onAdd = (labelText, displayName, user) => {
         const newItem = {
             id: `${userMesId}`,
             userId: "0r354041-94v0-22r0-9r1v-9g2s797g5vr5",
             avatar: "https://ru.botlibre.com/images/avatar.png",
-            user: "You",
+            user: displayName,
             text: labelText,
             createdAt: isoDate,
             editedAt: "",
@@ -71,7 +72,7 @@ export default function MessageList() {
         setState({data: [...state.data, newItem]});
         datebaseMessages.ref(`messages/`).set([...state.data, newItem]);
     }
-    const NumbersOfUsers = (snap) => {
+    const NumbersOfUsers = snap => {
         const userIds = snap.val().map(message => message.userId);
         const numberOfUsers = [...new Set(userIds)].length;
         setNumbersOfParticipants(numberOfUsers);
@@ -113,6 +114,7 @@ export default function MessageList() {
                 <MessageInput 
                     className="Mymessage" 
                     onAdd={onAdd}/>
+                    <button onClick={() => auth.signOut()}>Sign out</button>
             </>
         )   
 }
