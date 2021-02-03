@@ -3,12 +3,12 @@ import './message-input.css';
 
 export default function MessageInput(props) {
     const [state, setState] = useState({text: ''});
-    const onValueChange = (e) => {
+    const onValueChange = e => {
         setState({
             text: e.target.value
         });
     }
-    const onSubmit = (e) => {
+    const onSubmit = e => {
         e.preventDefault();
         props.onAdd(state.text);
         setState({
@@ -16,7 +16,7 @@ export default function MessageInput(props) {
         });
     }
         return (
-            <form 
+            <form
             className="bottom-panel d-flex"
             onSubmit={onSubmit}>
                 <input
@@ -24,7 +24,8 @@ export default function MessageInput(props) {
                     placeholder="Message"
                     className="form-control new-post-label"
                     onChange={onValueChange}
-                    value={state.text}/>
+                    value={state.text}
+                    />
                 <button
                     type="submit"
                     className="btn- btn-outline-secondary">

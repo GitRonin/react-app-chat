@@ -8,6 +8,7 @@ import './app.css';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import { AuthProvider } from '../components/Auth.js';
 import PrivateRoute from '../components/PrivateRoute.js';
+import PrivateMessage from '../components/privateMessage/privateMessage.jsx';
 
 // document.body.onload = function() {
 //   setTimeout(function() {
@@ -30,14 +31,15 @@ export default function App() {
           <AuthProvider>
             <Router>
               <div>
-                <PrivateRoute exact path="/" component={MessageList} />
+                <PrivateRoute exact path="/" component={MessageList}/>
                 <Route exact path="/signUp" component={SignUp}/>
                 <Route exact path="/signIn" component={SignIn}/>
                 <Route exact path="/passwordReset" component={PasswordReset}/>
+                <PrivateRoute exact path="/PrivateMessage" component={PrivateMessage}/>
               </div>
             </Router>
           </AuthProvider>
         </div>
-      </>
+        </>
   )
 }

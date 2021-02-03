@@ -5,34 +5,74 @@ import './message-list.css';
 import Message from '../../components/message/message';
 import {datebaseMessages} from '../../service/firebase.js';
 import {auth} from '../../service/firebase.js';
+import {Link} from 'react-router-dom';
 
-export function onAdd(){}
-export default function MessageList() {
+export default function MessageList(props) {
     // var timeTable = false;
     const date = new Date();
     const isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
     const [state, setState] = useState({data: []}); 
+    const [publicKey, setPublicKey] = useState([]);
+    const [objectKeys, setObjectKeys] = useState();
+    const [dataListBox, setDataListBox] = useState([]);
+    // const {itemListBox} = props.location;
     // const [timeTable, setTimeTable] = useState(false);
-    const [NumbersOfParticipants, setNumbersOfParticipants] = useState(0);
-    const [userMesId, setUserMesId] = useState(0);
+    // const [NumbersOfParticipants, setNumbersOfParticipants] = useState(0);
     
     useEffect(_ => {
-            datebaseMessages.ref(`messages`).on('value', snap => {
-                    setState({data: snap.val()})
-                    NumbersOfUsers(snap);
-                    // timeTableFunction(snap);
-                });
+        // datebaseMessages.ref(`chats/private`).on('value', snap => {
+        //     if(snap.val() !== null){
+        //         for (const key in snap.val()) {
+        //             if(snap.val()[key].messages !== undefined){
+        //                 if(Object.values(snap.val()[key].participants).includes(auth.currentUser.uid)){
+        //                     dataListBox.push(key);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // });
+        datebaseMessages.ref(`chats/public`).on('value', snap => {
+            setPublicKey(datebaseMessages.ref(`chats/public`).push().key);
+                if(snap.val() !== null){
+                    for (const key in snap.val()) {
+                        if(snap.val()[key].messages !== undefined){
+                            if(Object.values(snap.val()[key].participants).includes(auth.currentUser.uid)){
+                                // dataListBox.push(key);
+                                setState({data: Object.values(snap.val()[key].messages)})
+                                setPublicKey(key);
+                                setObjectKeys(Object.keys(snap.val()[key].messages));
+                            }
+                        }
+                    }
+                // NumbersOfUsers(snap.val());
+                // timeTableFunction(snap);
+        }});
     }, []);
     const onToggleLiked = id => {
         setState(({data}) => {
-            const index = data.findIndex(elem => elem.id === id);
-            const old = data[index];
-            const newItem = {...old, like: !old.like};
-            const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            datebaseMessages.ref(`messages/${index}`).update({like: !old.like});
-            return {
-                data: newArr
-            }
+                let onUserLike, newItem, isExists = true;
+                const index = data.findIndex(elem => elem.id === id);
+                const old = data[index];
+                datebaseMessages.ref(`chats/public/${publicKey}/messages/${objectKeys[index]}/like/userLike`).on('value', snap => onUserLike = snap.val() );
+                if(onUserLike !== null){
+                    for (const key in onUserLike) {
+                        if(onUserLike[key] === auth.currentUser.uid){
+                            delete onUserLike[key];
+                            newItem = {...old, like: {onUserLike: onUserLike}};
+                            isExists = false;
+                            datebaseMessages.ref(`chats/public/${publicKey}/messages/${objectKeys[index]}/like/userLike`).set(onUserLike);
+                        }
+                    }
+                }
+                if(isExists){
+                    datebaseMessages.ref(`chats/public/${publicKey}/messages/${objectKeys[index]}/like/userLike`).push().set(auth.currentUser.uid);
+                    newItem = {...old, like: {userLike: old.like !== undefined && old.like !== null ? (
+                        [old.like.userLike].push(auth.currentUser.uid) ) : ( auth.currentUser.uid) }};
+                }
+                const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+                return {
+                    data: newArr
+                }
         });
     }
     const onEdit = id => {
@@ -42,41 +82,50 @@ export default function MessageList() {
             const newLabel = prompt("Edit");
             const newItem = {...old, text: newLabel, editedAt: isoDate};
             const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
-            datebaseMessages.ref(`messages/${index}`).update({text: newLabel, editedAt: isoDate});
+            datebaseMessages.ref(`chats/public/${publicKey}/messages/${objectKeys[index]}/`).update({text: newLabel, editedAt: isoDate});
             return {
                 data: newArr
             }
         });
     }
     const onDelete = id => {
-        setState(_ => {
-            const newArr = state.data.filter(elem => elem.id !== id);
-            datebaseMessages.ref(`messages/`).set({...newArr});
+        setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+            const newArr = data.filter(elem => elem.id !== id);
+            datebaseMessages.ref(`chats/public/${publicKey}/messages/${objectKeys[index]}/`).remove();
             return{
                 data: newArr
             }
         });
     }
-    const onAdd = (labelText, displayName, user) => {
+    const onAdd = labelText => {
+        datebaseMessages.ref(`chats/public/${publicKey}/participants`).on('value', snap2 => {
+            if(snap2.val() === null || Object.values(snap2.val()).includes(auth.currentUser.uid) === false){
+                datebaseMessages.ref(`chats/public/${publicKey}/participants`).push(auth.currentUser.uid);
+            }
+        });
         const newItem = {
-            id: `${userMesId}`,
-            userId: "0r354041-94v0-22r0-9r1v-9g2s797g5vr5",
+            id: `${datebaseMessages.ref(`chats/public/${publicKey}/messages/`).push().key}`,
+            userId: auth.currentUser.uid,
             avatar: "https://ru.botlibre.com/images/avatar.png",
-            user: displayName,
+            user: auth.currentUser.displayName,
             text: labelText,
             createdAt: isoDate,
             editedAt: "",
-            own: true
+            like: {
+                userLike: ""
+            }, 
         };
-        setUserMesId(userMesId + 1);
-        setState({data: [...state.data, newItem]});
-        datebaseMessages.ref(`messages/`).set([...state.data, newItem]);
+        datebaseMessages.ref(`chats/public/${publicKey}/messages`).push().set(newItem);
+        setState({data: state.data === undefined || state.data === null ? newItem : [...state.data, newItem]});
     }
-    const NumbersOfUsers = snap => {
-        const userIds = snap.val().map(message => message.userId);
-        const numberOfUsers = [...new Set(userIds)].length;
-        setNumbersOfParticipants(numberOfUsers);
-    }
+
+    // const NumbersOfUsers = data => {
+    //     const userIds = data.map(message => message.userId);
+    //     const numberOfUsers = [...new Set(userIds)].length;
+    //     setNumbersOfParticipants(numberOfUsers);
+    // }
+
     // const timeTableFunction = (snap) => {
     //     const userIndex = snap.val().map((item, index) => index);
     //         console.log(index);
@@ -88,33 +137,54 @@ export default function MessageList() {
     //             }
     //             else{setTimeTable(true)}
     //         }
-    // }
-    const elements = state.data.map((item) => {
-                return(
-                        <Message
-                        key={item.id}
-                        item={item}
-                        // timeTable={timeTable}
-                        onDelete={onDelete}
-                        onEdit={onEdit}
-                        onToggleLiked={onToggleLiked}
-                        />
-                )
+    // // }
+    const dataListBoxPublic = dataListBox === undefined || dataListBox === null ? null : dataListBox.map((itemListBox) => {
+        return(
+            <div>
+                <Link to={{                                
+                    pathname: '/PrivateMessage',
+                    itemListBox: itemListBox
+                }}>{itemListBox}</Link>
+            </div>
+        )
     });
+
+    const elements = state.data === undefined || state.data === null ? null : state.data.map(item => {
+        return(
+                <Message
+                dataListBox={dataListBox}
+                typeChat="public"
+                key={item.id}
+                item={item}
+                // timeTable={timeTable}
+                onDelete={onDelete}
+                onEdit={onEdit}
+                onToggleLiked={onToggleLiked} 
+                />
+        )
+});
         return(
             <>
-                <Header 
-                    participants={NumbersOfParticipants}
-                    messages={state.data.length}
-                    lastMessage={state.data.length ? state.data[state.data.length - 1].createdAt.slice(11, -8) : ''}
-                    />
-                    <div className="title">
-                        {elements}
+                <div className="messageList">
+                    <div>
+                        <Header
+                            typeChat="Public"
+                            // participants={NumbersOfParticipants}
+                            messages={state.data.length}
+                            lastMessage={state.data.length ? state.data[state.data.length - 1].createdAt.slice(11, -8) : ''}
+                            />
+                        <div className="title">
+                            {elements}
+                        </div>
+                        <MessageInput
+                            className="Mymessage" 
+                            onAdd={onAdd}/>
                     </div>
-                <MessageInput 
-                    className="Mymessage" 
-                    onAdd={onAdd}/>
-                    <button onClick={() => auth.signOut()}>Sign out</button>
+                    <div className="mainBoxPrivateMessages">
+                        {dataListBoxPublic}
+                    </div>
+                </div>
+                  <button onClick={() => auth.signOut()}>Sign out</button>
             </>
         )   
 }

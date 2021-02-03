@@ -19,16 +19,16 @@ export const signInWithGoogle = _ => {
 };
 export const generateUserDocument = async (displayName, user) => {
   if (!user) return;
-
+  
   const snapshot = await datebaseMessages.ref(`user/${user.uid}`).on('value', snap => snap.val());
 
   if (!snapshot.exists) {
-    const {email, uid } = user;
+    const {email, uid} = user;
     try {
     await datebaseMessages.ref(`users/${uid}`).set({
       user: displayName,
       email: email,
-      avatar: "https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png",
+      avatar: auth.currentUser.photoURL,
       userId: uid
     });
     } 

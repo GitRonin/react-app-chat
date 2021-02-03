@@ -4,18 +4,24 @@ import {auth, signInWithGoogle, generateUserDocument} from '../../service/fireba
 import {Link} from 'react-router-dom';
 import './index.css';
 
+
  const SignUp = ({history}) => {
         const handleSignUp = useCallback(async event => {
             event.preventDefault();
             const {displayName, email, password} = event.target.elements;
             try {
                 const {user} = await auth.createUserWithEmailAndPassword(email.value, password.value);
+                auth.currentUser.updateProfile({
+                    displayName: displayName.value,
+                    photoURL: "https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png",
+                });
                 history.push("/");
                 generateUserDocument(displayName.value, user);
             } catch (error) {
                 alert(error);
             }
         }, [history]);
+        
     return(
         <div>
             <h1 className="SignInText">Sign Up</h1>
